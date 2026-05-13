@@ -19,6 +19,7 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+        purple: "bg-gradient-to-r from-purple-900/80 to-indigo-900/80 text-purple-200 border border-purple-600/40 backdrop-blur-sm px-2.5 py-0.5 rounded-full text-xs font-medium [a]:hover:bg-purple-900/90 [a]:hover:text-purple-100 focus-visible:ring-purple-900/50 focus-visible:ring-[3px] focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-purple-900/90",
       },
     },
     defaultVariants: {

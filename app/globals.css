@@ -126,3 +126,16 @@
     scroll-behavior: smooth;
   }
 }
+
+
+/* globals.css */
+.custom-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: rgba(59, 7, 100, 0.4); /* purple-950/40 */
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(126, 34, 206, 0.6); /* purple-700/60 */
+  border-radius: 999px;
+}

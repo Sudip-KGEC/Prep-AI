@@ -1,12 +1,11 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import Hero from "@/components/home/Hero";
+
 
 export default function Home() {
   return (
-     <div>
-       <section className="px-20 py-29">
-        <Button variant="destructive">Click me</Button>
-       </section>
+     <div className=" bg-black overflow-x-hidden ">
+      {/* Hero */}
+      <Hero/>
        
      </div>
   );
