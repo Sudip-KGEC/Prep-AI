@@ -1,6 +1,9 @@
-import Companies from "@/components/home/Companies";
-import Features from "@/components/home/Features";
-import Hero from "@/components/home/Hero";
+import Companies from "@/components/landingPage-sections/Companies";
+import Cta from "@/components/landingPage-sections/Cta";
+import Features from "@/components/landingPage-sections/Features";
+import Hero from "@/components/landingPage-sections/Hero";
+import Pricing from "@/components/landingPage-sections/Pricing";
+import Roles from "@/components/landingPage-sections/Roles";
 
 
 export default function Home() {
@@ -12,6 +15,13 @@ export default function Home() {
       <Companies/>
       {/* Features */}
       <Features/>
+      {/* Roles  */}
+      <Roles/>
+
+      {/* Pricing */}
+      <Pricing/>
+      {/* CTA */}
+      <Cta/>
        
      </div>
   );

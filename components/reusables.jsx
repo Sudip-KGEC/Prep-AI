@@ -1,13 +1,19 @@
+
+
 export const GrayTitle = ({ children }) => (
   <span className="bg-linear-to-br from-stone-100 via-stone-300 to-stone-500 bg-clip-text text-transparent">
     {children}
   </span>
 );
+
+
 export const PurpleTitle = ({ children }) => (
   <span className="bg-linear-to-br from-violet-300 via-violet-400 to-violet-500 bg-clip-text text-transparent">
     {children}
   </span>
 );
+
+
 export const SectionLabel = ({ children }) => (
   <p className="inline-flex items-center gap-2 text-xs font-semibold text-violet-400 tracking-[0.14em] uppercase mb-4">
     <span className="w-4 h-px bg-violet-400" />
@@ -25,6 +31,7 @@ export const SectionHeading = ({ gray, purple }) => (
     <PurpleTitle>{purple}</PurpleTitle>
   </h2>
 );
+
 
 export default function PageHeader({ label, gray, gold, description, right }) {
   return (

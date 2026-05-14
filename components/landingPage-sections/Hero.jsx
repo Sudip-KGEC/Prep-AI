@@ -52,7 +52,7 @@ const Hero = () => {
                 </div>
             </div>
             <div className='col-span-full lg:col-span-2 lg:flex items-center justify-center lg:justify-start mt-12 lg:mt-0 lg:rotate-3 '>
-                    <CodeDemo duration={20000} delay={1000} writing={true} cursor={true} />
+                    <CodeDemo duration={30000} delay={500} writing={true} cursor={true} />
             </div>
         </section>
     )
