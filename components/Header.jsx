@@ -9,7 +9,7 @@ const Header = () => {
         <nav className='fixed top-0 inset-x-0 z-50 flex items-center justify-between px-10 py-3 border-b border-white/7 backdrop-blur-xl'>
           {/* LOGO */}
             <Link href={"/"}>
-               <Image  src="/logo.png"   priority alt="Prep-AI-Logo" width={100} height={100} className='h-11 w-auto' />
+               <Image  src='/logo.png' alt="Prep-AI-Logo" width={140} height={140} className='h-10 w-30 object-cover' />
             </Link>
 
 
