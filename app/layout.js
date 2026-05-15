@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Header from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const lora = Lora({
   subsets: ["latin"],
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
               {children}
          </main>
         {/* Footer */}
+        <Footer/>
           </ThemeProvider>
         </body>
       </html>
