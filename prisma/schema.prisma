@@ -42,7 +42,7 @@ enum PayoutStatus {
 enum InterviewCategory {
   FRONTEND
   BACKEND
-  FULL_STACK
+  FULLSTACK
   DSA
   SYSTEM_DESIGN
   BEHAVIORAL

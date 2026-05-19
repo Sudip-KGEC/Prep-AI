@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { checkUser } from '@/lib/checkUser'
 import { CalendarDays, Users } from 'lucide-react'
 import CreditsButton from './CreditsButton'
+import RoleRedirect from './RoleRedirect'
 
 const Header = async () => {
 
@@ -21,6 +22,9 @@ const Header = async () => {
 
 
       {/* Redirection logic */}
+    
+    { user && <RoleRedirect role={user.role}/>}
+
 
       {/* Sign In */}
       <div className='flex items-center gap-3'>
