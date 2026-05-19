@@ -25,6 +25,7 @@ const aj = arcjet({
 
 export default clerkMiddleware(async (auth , req) => {
   if (!isWebhookRoute(req)) {
+     
     const decision = await aj.protect(req);
     if (decision.isDenied()) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
