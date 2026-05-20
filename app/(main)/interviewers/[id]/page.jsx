@@ -10,25 +10,38 @@ import { StarsBackgroundDemo } from "@/components/landingPage-sections/demo-comp
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { CATEGORY_LABEL, EXPECT_ITEMS } from "@/lib/data";
+import { CATEGORY_LABEL, EXPECT_ITEMS, PLANS } from "@/lib/data";
 
 export default async function InterviewerProfilePage({ params }) {
   const { id } = await params;
 
   const user = await currentUser();
- if (!user?.id) {
-  redirect("/");
-}
+  if (!user?.id) {
+    redirect("/");
+  }
 
   const dbUser = await db.user.findUnique({
     where: { clerkUserId: user.id },
-    select: { role: true, credits: true },
+    select: { role: true, credits: true , currentPlan: true },
   });
+
+
 
   if (!dbUser) redirect("/");
   if (dbUser.role === "UNASSIGNED") redirect("/onboarding");
 
-  const interviewer = await getInterviewerProfile({interviewerId : id});
+
+const currentPlan = PLANS.find(
+  (plan) => plan.slug === dbUser.currentPlan
+);
+
+const allowedItems = EXPECT_ITEMS.filter((item) =>
+  currentPlan?.expectFeatures?.includes(item.feature)
+);
+
+
+
+  const interviewer = await getInterviewerProfile({ interviewerId: id });
 
   if (!interviewer) notFound();
 
@@ -141,17 +154,19 @@ export default async function InterviewerProfilePage({ params }) {
               </p>
             </div>
             <ul className="flex flex-col gap-5">
-              {EXPECT_ITEMS.map(([icon, title, desc]) => (
-                <li key={title} className="flex items-start gap-4">
+              {allowedItems.map((item) => (
+                <li key={item.title} className="flex items-start gap-4">
                   <span className="mt-0.5 w-10 h-10 shrink-0 rounded-xl bg-purple-400/10 border border-purple-400/20 flex items-center justify-center text-lg">
-                    {icon}
+                    {item.icon}
                   </span>
+
                   <div className="flex flex-col gap-0.5">
                     <p className="text-sm font-medium text-stone-200">
-                      {title}
+                      {item.title}
                     </p>
+
                     <p className="text-xs text-stone-500 font-light leading-relaxed">
-                      {desc}
+                      {item.desc}
                     </p>
                   </div>
                 </li>

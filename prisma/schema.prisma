@@ -111,21 +111,32 @@ model Availability {
 }
 
 // ─── BOOKINGS ────────────────────────────────────────────
-
 model Booking {
   id             String        @id @default(uuid())
+
   intervieweeId  String
   interviewee    User          @relation("IntervieweeBookings", fields: [intervieweeId], references: [id])
+
   interviewerId  String
   interviewer    User          @relation("InterviewerBookings", fields: [interviewerId], references: [id])
+
   startTime      DateTime
   endTime        DateTime
+
+  duration       Int @default(45)
+
   status         BookingStatus @default(SCHEDULED)
+
   creditsCharged Int
+
   streamCallId   String?       @unique
+
   recordingUrl   String?
+
   feedback       Feedback?
+
   transactions   CreditTransaction[]
+
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
@@ -133,7 +144,6 @@ model Booking {
   @@index([interviewerId, status])
   @@index([intervieweeId, status])
 }
-
 // ─── FEEDBACK ────────────────────────────────────────────
 
 model Feedback {

@@ -1,6 +1,6 @@
 
 
-export default function OnboardingPage() {
+export default function dashboardPage() {
   return (
     <div>
       dashboard Page

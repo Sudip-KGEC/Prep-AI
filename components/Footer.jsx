@@ -10,19 +10,19 @@ export function Footer() {
   return (
     <footer className="border-t border-purple-400/20 bg-background">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10">
-        
+
         {/* Top */}
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-          
+
           {/* Logo + Message */}
           <div className="flex flex-col items-center gap-4 text-center md:items-start md:text-left">
             <Image
               src="/logo.png"
               alt="Prep AI Logo"
+              loading="eager"
               width={140}
               height={40}
-              priority
-              className="h-auto w-auto object-contain"
+              className="h-14 w-48 object-contain text-left"
             />
 
             <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
@@ -67,7 +67,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
-          
+
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Prep AI. All rights reserved.
           </p>
@@ -88,7 +88,7 @@ export function Footer() {
               variant="outline"
               size="sm"
               asChild
-              
+
             >
               <Link href="https://linkedin.com" target="_blank">
                 <p>Linkedin</p>
@@ -99,10 +99,10 @@ export function Footer() {
               variant="outline"
               size="sm"
               asChild
-              
+
             >
               <Link href="https://twitter.com" target="_blank">
-               <p>Twitter</p>
+                <p>Twitter</p>
               </Link>
             </Button>
 
@@ -110,7 +110,7 @@ export function Footer() {
               variant="outline"
               size="sm"
               asChild
-             
+
             >
               <Link href="https://instagram.com" target="_blank">
                 <p>Instagram </p>
