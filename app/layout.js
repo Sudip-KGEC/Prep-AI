@@ -22,7 +22,7 @@ const dmSans = DM_Sans({
 
 
 export const metadata = {
-  title: "Prep AI",
+  title: "PrepHire",
   description: "A tool to help you prepare for your next interview.",
 };
 

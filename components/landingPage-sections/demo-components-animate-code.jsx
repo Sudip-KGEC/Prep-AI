@@ -8,12 +8,7 @@ import {
 import { Code2 } from "lucide-react";
 import React from "react";
 
-export const CodeDemo = ({ duration, delay, writing, cursor }) => {
-  return (
-    <Code
-      key={`${duration}-${delay}-${writing}-${cursor}`}
-      className="w-full sm:w-110 h-110 border-none overflow-x-hidden overflow-y-scroll [&::-webkit-scrollbar]:w-[0.5px] [&::-webkit-scrollbar]:h-0 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-purple-950 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-width:none] [scrollbar-color:#7c3aed transparent]"
-      code={`import { useState, useEffect } from "react";
+const CODE = `import { useState, useEffect } from "react";
 
 const useFetch = (url, options) => {
   const [data, setData] = useState(null);
@@ -26,7 +21,7 @@ const useFetch = (url, options) => {
       try {
         const response = await fetch(url, options);
         if (!response.ok) {
-          throw new Error('HTTP error! status: response.status');
+          throw new Error(\`HTTP error! status: \${response.status}\`);
         }
         const result = await response.json();
         setData(result);
@@ -39,21 +34,27 @@ const useFetch = (url, options) => {
     };
 
     fetchData();
-  }, [url, options]); // Re-run effect if URL or options change
+  }, [url]);
 
   return { data, loading, error };
 };
 
-export default useFetch;'
-`}
+export default useFetch;`;
+
+export const CodeDemo = ({ duration, delay, writing, cursor }) => {
+  return (
+    <Code
+      key={`${duration}-${delay}-${writing}-${cursor}`}
+      className="w-full sm:w-110 h-110 border-none overflow-auto scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+      code={CODE}
     >
       <CodeHeader icon={Code2} copyButton>
-        use-fetch.jsx
+        use-fetch.tsx
       </CodeHeader>
 
       <CodeBlock
         cursor={cursor}
-        lang="jsx"
+        lang="tsx"
         writing={writing}
         duration={duration}
         delay={delay}
