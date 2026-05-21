@@ -8,38 +8,58 @@ import {
 import { Code2 } from "lucide-react";
 import React from "react";
 
-const CODE = `import { useState, useEffect } from "react";
+const CODE = `import { useState, useEffect, useCallback, useRef } from "react";
 
-const useFetch = (url, options) => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const usePreparation = (goal, options = {}) => {
+  const [progress, setProgress] = useState(null);
+  const [grinding, setGrinding] = useState(true);
+  const [setback, setSetback] = useState(null);
+  const attemptsRef = useRef(0);
+
+  const { retryLimit = Infinity, onSuccess, onFailure } = options;
+
+  const pursue = useCallback(async () => {
+    if (attemptsRef.current >= retryLimit) return;
+
+    attemptsRef.current += 1;
+    setGrinding(true);
+
+    try {
+      const result = await goal();
+
+      setProgress(result);
+      setSetback(null);
+      onSuccess?.(result);
+
+    } catch (rejection) {
+      setSetback(rejection);
+      onFailure?.(rejection, attemptsRef.current);
+
+    } finally {
+      setGrinding(false);
+    }
+  }, [goal, retryLimit, onSuccess, onFailure]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(url, options);
-        if (!response.ok) {
-          throw new Error(\`HTTP error! status: \${response.status}\`);
-        }
-        const result = await response.json();
-        setData(result);
-        setError(null);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    pursue();
+  }, [pursue]);
 
-    fetchData();
-  }, [url]);
+  const keepGoing = useCallback(() => {
+    setSetback(null);
+    pursue();
+  }, [pursue]);
 
-  return { data, loading, error };
+  return {
+    progress,
+    grinding,
+    setback,
+    keepGoing,
+    attempts: attemptsRef.current,
+    hired: progress !== null && !grinding,
+  };
 };
 
-export default useFetch;`;
+export default usePreparation;`;
 
 export const CodeDemo = ({ duration, delay, writing, cursor }) => {
   return (
@@ -49,7 +69,7 @@ export const CodeDemo = ({ duration, delay, writing, cursor }) => {
       code={CODE}
     >
       <CodeHeader icon={Code2} copyButton>
-        use-fetch.tsx
+        use-preparation.tsx
       </CodeHeader>
 
       <CodeBlock

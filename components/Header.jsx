@@ -21,9 +21,8 @@ const Header = async () => {
           alt="PrepHire Logo"
           width={160}
           height={44}
-          loading="eager"
           priority
-          className="h-16 w-40 object-contain drop-shadow-[0_0_8px_rgba(130,80,255,0.3)]"
+          className="h-16 w-auto object-contain drop-shadow-[0_0_8px_rgba(130,80,255,0.3)]"
         />
       </Link>
 
@@ -72,8 +71,9 @@ const Header = async () => {
                 </Link>
               </Button>
               <Button
+                variant="purple"
                 asChild
-                className="bg-violet-600 hover:bg-violet-500 text-white rounded-full px-4 gap-1.5 shadow-[0_0_14px_rgba(139,92,246,0.25)] hover:shadow-[0_0_20px_rgba(139,92,246,0.45)] transition-all duration-200"
+                className=" text-white rounded-full px-4 gap-1.5 shadow-[0_0_14px_rgba(139,92,246,0.25)] hover:shadow-[0_0_25px_rgba(168,85,247,0.55)] transition-all duration-300"
               >
                 <Link href="/appointments">
                   <CalendarDays size={15} />
