@@ -15,40 +15,32 @@ const isWebhookRoute = createRouteMatcher([
 
 const aj = arcjet({
   key: process.env.ARCJET_KEY,
-
   characteristics: ["ip.src"],
-
   rules: [
-    shield({
-      mode: "LIVE",
-    }),
-
+    shield({ mode: "LIVE" }),
     detectBot({
       mode: "LIVE",
       allow: [
         "CATEGORY:SEARCH_ENGINE",
         "CATEGORY:PREVIEW",
+        "CATEGORY:MONITOR",
       ],
     }),
   ],
 });
 
 export default clerkMiddleware(async (auth, req) => {
-  // Skip trusted webhook routes
-  if (!isWebhookRoute(req)) {
-    const decision = await aj.protect(req);
+  if (isWebhookRoute(req)) {
+    return NextResponse.next();
+  }
 
-    if (decision.isDenied()) {
-      return NextResponse.json(
-        { error: "Access denied" },
-        { status: 403 }
-      );
-    }
+  const decision = await aj.protect(req);
+  if (decision.isDenied()) {
+    return NextResponse.json({ error: "Access denied" }, { status: 403 });
   }
 
   const { userId, redirectToSignIn } = await auth();
 
-  // Protect private routes
   if (!userId && isProtectedRoute(req)) {
     return redirectToSignIn();
   }

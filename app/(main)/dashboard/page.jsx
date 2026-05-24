@@ -14,6 +14,11 @@ import EarningsSection from "./_components/EarningsSection";
 import { ClipboardList, Clock, Wallet } from "lucide-react";
 import { getCurrentUser } from "@/actions/user";
 
+
+export const metadata = {
+  title: "dashboard"
+};
+
 export default async function InterviewerDashboardPage() {
   const user = await currentUser();
   if (!user) redirect("/");

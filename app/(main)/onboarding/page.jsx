@@ -5,19 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ONBOARDING_ROLES , YEARS_OPTIONS , CATEGORIES } from '@/lib/data';
+import { ONBOARDING_ROLES, YEARS_OPTIONS, CATEGORIES } from '@/lib/data';
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import {completeOnboarding} from "@/actions/onbording.js"
+import { completeOnboarding } from "@/actions/onbording.js";
 import useFetch from "@/hooks/use-fetch";
 
-
-export default function OnboardingPage (){
-
-
-
- const router = useRouter();
-
+export default function OnboardingPage() {
   const { data, loading, fn: onboardingFn } = useFetch(completeOnboarding);
 
   const [role, setRole] = useState(null);
@@ -31,9 +24,10 @@ export default function OnboardingPage (){
 
   useEffect(() => {
     if (data && !loading) {
-      router.push(role === "INTERVIEWER" ? "/dashboard" : "/explore");
+      window.location.href = role === "INTERVIEWER" ? "/dashboard" : "/explore";
     }
-  }, [data, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, loading, role]);
 
   const toggleCategory = (val) => {
     setForm((prev) => ({
@@ -56,7 +50,6 @@ export default function OnboardingPage (){
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-
     onboardingFn({
       role,
       ...(role === "INTERVIEWER" && {
@@ -70,9 +63,8 @@ export default function OnboardingPage (){
   };
 
   return (
-    <main className="min-h-screen px-6  flex flex-col items-center">
+    <main className="min-h-screen px-6 flex flex-col items-center">
       <div className="w-full max-w-2xl">
-        {/* Heading */}
         <div className="text-center mb-10">
           <SectionLabel>Welcome</SectionLabel>
           <h1 className="font-serif text-5xl leading-tight tracking-tighter mt-1">
@@ -82,10 +74,7 @@ export default function OnboardingPage (){
           </h1>
           <p className="text-sm text-stone-500 font-light mt-4 leading-relaxed">
             This helps us personalise your experience.
-            <span className="text-stone-600">
-              {" "}
-              You can&apos;t change this later.
-            </span>
+            <span className="text-stone-600"> You can&apos;t change this later.</span>
           </p>
         </div>
 
@@ -114,7 +103,6 @@ export default function OnboardingPage (){
 
         {role && (
           <div className="flex flex-col gap-6">
-            {/* role strip */}
             <div className="flex items-center justify-between bg-[#0f0f11] border border-white/10 rounded-2xl px-6 py-4">
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 rounded-xl bg-purple-400/20 border border-purple-400/30 flex items-center justify-center text-base shrink-0">
@@ -132,10 +120,8 @@ export default function OnboardingPage (){
               </Button>
             </div>
 
-            {/* interviewer form */}
             {role === "INTERVIEWER" && (
               <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8 flex flex-col gap-6">
-                {/* Title + Company */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="title">Current title</Label>
@@ -143,34 +129,26 @@ export default function OnboardingPage (){
                       id="title"
                       placeholder="Senior Software Engineer"
                       value={form.title}
-                      onChange={(e) =>
-                        setForm((p) => ({ ...p, title: e.target.value }))
-                      }
+                      onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
                     />
                   </div>
-
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="company">Company</Label>
                     <Input
                       id="company"
                       placeholder="Google, Meta, Startup…"
                       value={form.company}
-                      onChange={(e) =>
-                        setForm((p) => ({ ...p, company: e.target.value }))
-                      }
+                      onChange={(e) => setForm((p) => ({ ...p, company: e.target.value }))}
                     />
                   </div>
                 </div>
 
-                {/* years */}
                 <div className="flex flex-wrap gap-2">
                   {YEARS_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
                       type="button"
-                      onClick={() =>
-                        setForm((p) => ({ ...p, yearsExp: opt.value }))
-                      }
+                      onClick={() => setForm((p) => ({ ...p, yearsExp: opt.value }))}
                       className={`text-xs px-4 py-2 rounded-lg border ${
                         form.yearsExp === opt.value
                           ? "border-purple-400/40 bg-purple-400/10 text-purple-500"
@@ -182,13 +160,10 @@ export default function OnboardingPage (){
                   ))}
                 </div>
 
-                {/* categories */}
                 <div className="flex flex-wrap gap-2">
                   {CATEGORIES.map((cat) => {
                     if (!cat?.value) return null;
-
                     const active = form.categories.includes(cat.value);
-
                     return (
                       <button
                         key={cat.value}
@@ -206,21 +181,17 @@ export default function OnboardingPage (){
                   })}
                 </div>
 
-                {/* bio */}
                 <Textarea
                   rows={4}
                   maxLength={300}
                   placeholder="Tell interviewees about your background, what you specialise in, and what they can expect from a session with you."
                   value={form.bio}
-                  onChange={(e) =>
-                    setForm((p) => ({ ...p, bio: e.target.value }))
-                  }
+                  onChange={(e) => setForm((p) => ({ ...p, bio: e.target.value }))}
                 />
               </div>
             )}
 
             <Button
-
               variant="purple"
               size="hero"
               className="w-full mb-10 py-2"
@@ -237,8 +208,5 @@ export default function OnboardingPage (){
         )}
       </div>
     </main>
-  )
+  );
 }
-
-
-

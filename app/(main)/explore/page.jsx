@@ -4,6 +4,9 @@ import PageHeader from "@/components/reusables";
 import ExploreGridCard from "./_components/ExploreGridCard";
 import { getInterviewers } from "@/actions/explore";
 
+export const metadata = {
+  title: "expolre"
+};
 
 export default async function explorePage () {
 

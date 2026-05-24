@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays } from "lucide-react";
 import Link from "next/link";
 
-
+export const metadata = {
+  title: "appointments"
+};
 
 
 export default async function appointmentsPage() {

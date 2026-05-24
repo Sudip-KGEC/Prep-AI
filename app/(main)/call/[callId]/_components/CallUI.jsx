@@ -145,7 +145,7 @@ export default function CallUI({
                     <Tabs defaultValue="chat"  className='h-full overflow-hidden'>
                         <TabsList variant="line" className="w-full">
                             <TabsTrigger value="chat" className='w-1/2 py-4 h-6'><MessageSquare size={12} /> Chat</TabsTrigger>
-                            {true && <TabsTrigger value="questions" className='w-1/2 py-4 h-6'><Sparkles size={13} />AI Questions</TabsTrigger>}
+                            { isInterviewer && <TabsTrigger value="questions" className='w-1/2 py-4 h-6'><Sparkles size={13} />AI Questions</TabsTrigger>}
                         </TabsList>
                         <TabsContent value="chat">
                             {chatClient && chatChannel ? (

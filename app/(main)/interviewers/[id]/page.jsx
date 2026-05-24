@@ -12,6 +12,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CATEGORY_LABEL, EXPECT_ITEMS, PLANS } from "@/lib/data";
 
+export const metadata = {
+  title: "interviewsers"
+};
+
 export default async function InterviewerProfilePage({ params }) {
   const { id } = await params;
 

@@ -5,6 +5,10 @@ import { notFound } from "next/navigation";
 import PayoutReviewClient from "./_components/PayoutReviewClient";
 import { PurpleTitle, GrayTitle, SectionLabel } from "@/components/reusables";
 
+export const metadata = {
+  title: "payout"
+};
+
 export default async function PayoutReviewPage({ params }) {
   const { id } = await params;
 

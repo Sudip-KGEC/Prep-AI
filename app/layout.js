@@ -22,8 +22,11 @@ const dmSans = DM_Sans({
 
 
 export const metadata = {
-  title: "PrepHire",
-  description: "A tool to help you prepare for your next interview.",
+  title: {
+    template:" %s | PrepHire ",
+    default: "PrepHire"
+  },
+  description: "A tool to help you prepare for your next interview and get your dream placement.",
 };
 
 export default function RootLayout({ children }) {

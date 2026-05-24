@@ -37,13 +37,13 @@ const Roles = () => {
                         </ul>
 
                         {role.label.toLowerCase().includes('interviewee') && (
-                            <div className="rounded-xl border border-violet-500/15 bg-violet-500/[0.04] p-4">
+                            <div className="rounded-xl border border-violet-500/15 bg-violet-500/10 p-4">
                                 <p className="text-[11px] font-medium tracking-[0.16em] uppercase text-violet-400/60 mb-3">
                                     Job & Internship Resources
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {["Browse Job Openings", "Internship Listings", "Resume Review", "Referral Network", "Off-Campus Drives", "Career Roadmaps"].map((item) => (
-                                        <span key={item} className="text-xs px-2.5 py-1 rounded-lg border border-violet-500/20 bg-violet-500/[0.06] text-violet-300/55">
+                                        <span key={item} className="text-xs px-2.5 py-1 rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-300/55">
                                             {item}
                                         </span>
                                     ))}
@@ -52,13 +52,13 @@ const Roles = () => {
                         )}
 
                         {role.label.toLowerCase().includes('interviewer') && (
-                            <div className="rounded-xl border border-violet-500/15 bg-violet-500/[0.04] p-4">
+                            <div className="rounded-xl border border-violet-500/15 bg-violet-500/10 p-4">
                                 <p className="text-[11px] font-medium tracking-[0.16em] uppercase text-violet-400/60 mb-3">
                                     Post Opportunities
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {["Post Job Vacancies", "Refer Candidates", "Internship Openings", "Team Hiring", "Campus Recruitment", "Freelance Roles"].map((item) => (
-                                        <span key={item} className="text-xs px-2.5 py-1 rounded-lg border border-violet-500/20 bg-violet-500/[0.06] text-violet-300/55">
+                                        <span key={item} className="text-xs px-2.5 py-1 rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-300/55">
                                             {item}
                                         </span>
                                     ))}

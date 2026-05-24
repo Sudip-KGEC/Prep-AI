@@ -2,6 +2,10 @@ import { redirect, notFound } from "next/navigation";
 import { getCallData } from "@/actions/call";
 import CallRoom from "./_components/CallRoom";
 
+export const metadata = {
+  title: "call"
+};
+
 export default async function CallPage({ params }) {
   const { callId } = await params;
 

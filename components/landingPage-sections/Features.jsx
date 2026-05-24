@@ -40,7 +40,7 @@ const Features = () => {
             <div className="mt-4 rounded-xl bg-[#141417] border border-violet-500/10 p-4 flex justify-between items-end">
               <div>
                 <p className="text-xs text-stone-600 mb-1">Your balance</p>
-                <p className="font-serif text-4xl leading-none bg-gradient-to-br from-purple-400 to-purple-600 bg-clip-text text-transparent">
+                <p className="font-serif text-4xl leading-none bg-linear-to-br from-purple-400 to-purple-600 bg-clip-text text-transparent">
                   28
                 </p>
                 <p className="text-xs text-stone-600 mt-1">credits remaining</p>
@@ -105,7 +105,7 @@ const Features = () => {
           </BentoCard>
         </div>
 
-        <div className="col-span-12 md:col-span-6">
+        <div className="col-span-12 md:col-span-5">
           <BentoCard
             icon={<Briefcase size={18} className="text-purple-400" />}
             title={<GrayTitle>Full-time Job Prep</GrayTitle>}
@@ -115,7 +115,7 @@ const Features = () => {
               {["SDE I / II", "Product Manager", "Data Analyst", "System Design", "FAANG", "Startups"].map((tag) => (
                 <span
                   key={tag}
-                  className="text-xs px-3 py-1.5 rounded-lg border border-violet-500/20 bg-violet-500/[0.06] text-violet-300/60"
+                  className="text-xs px-3 py-1.5 rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-300/60"
                 >
                   {tag}
                 </span>
@@ -124,7 +124,7 @@ const Features = () => {
           </BentoCard>
         </div>
 
-        <div className="col-span-12 md:col-span-6">
+        <div className="col-span-12 md:col-span-7">
           <BentoCard
             icon={<GraduationCap size={18} className="text-purple-400" />}
             title={<PurpleTitle>Internship Track</PurpleTitle>}
@@ -134,7 +134,7 @@ const Features = () => {
               {["Summer Internship", "Off-Campus", "On-Campus", "OA Prep", "HR Round", "Resume Review"].map((tag) => (
                 <span
                   key={tag}
-                  className="text-xs px-3 py-1.5 rounded-lg border border-violet-500/20 bg-violet-500/[0.06] text-violet-300/60"
+                  className="text-xs px-3 py-1.5 rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-300/60"
                 >
                   {tag}
                 </span>
