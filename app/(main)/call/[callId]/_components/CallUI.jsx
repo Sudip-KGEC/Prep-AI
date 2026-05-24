@@ -2,7 +2,6 @@
 
 import { useEffect, useCallback, useState } from "react";
 
-// Stream Video
 import {
     StreamTheme,
     SpeakerLayout,
@@ -10,11 +9,9 @@ import {
     useCall,
     CallingState,
     CallControls,
-} from "@stream-io/video-react-sdk"
-    ;
+} from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 
-// Stream Chat
 import {
     Chat,
     Channel,
@@ -26,12 +23,10 @@ import {
 
 import "stream-chat-react/dist/css/index.css";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Sparkles, Loader2 } from "lucide-react";
 import AIQuestionsPanel from "./AIQuestions";
-
-// ─── Call UI (inside StreamCall context) ─────────────────────────────────────
 
 export default function CallUI({
     callId,
@@ -48,22 +43,36 @@ export default function CallUI({
 
     const [activeTab, setActiveTab] = useState("chat");
 
-    // Auto-stop recording before leaving
+    // Start recording + transcription when interviewer joins
+    useEffect(() => {
+        if (!call || !isInterviewer) return;
+        if (callingState !== CallingState.JOINED) return;
+
+        const startMedia = async () => {
+            try {
+                await call.startRecording();
+                await call.startTranscription();
+            } catch (err) {
+                console.error("Failed to start recording/transcription:", err);
+            }
+        };
+
+        startMedia();
+    }, [call, callingState, isInterviewer]);
+
+    // Stop transcription + recording before leaving
     const handleLeave = useCallback(async () => {
         try {
             if (call) {
-                const isRecording = call.state?.recording;
-                if (isRecording) {
-                    await call.stopRecording().catch(() => { });
-                }
-                await call.leave().catch(() => { });
+                await call.stopTranscription().catch(() => {});
+                await call.stopRecording().catch(() => {});
+                await call.leave().catch(() => {});
             }
         } finally {
             onLeave();
         }
     }, [call, onLeave]);
 
-    // ── Chat client — same token works for both Video + Chat SDKs ──
     const chatClient = useCreateChatClient({
         apiKey,
         tokenOrProvider: token,
@@ -93,7 +102,7 @@ export default function CallUI({
             .catch(console.error);
 
         return () => {
-            channel.stopWatching().catch(() => { });
+            channel.stopWatching().catch(() => {});
         };
     }, [chatClient, callId, booking]);
 
@@ -106,7 +115,7 @@ export default function CallUI({
     }
 
     return (
-        <div className="h-full  flex flex-col overflow-hidden">
+        <div className="h-full flex flex-col overflow-hidden">
             {/* Top bar */}
             <div className="flex items-center justify-between px-6 py-3 border-b border-white/8 shrink-0">
                 <div className="flex items-center gap-2">
@@ -131,7 +140,7 @@ export default function CallUI({
 
             {/* Body: video + side panel */}
             <div className="flex flex-1 min-h-0">
-                {/* ── LEFT: Video ── */}
+                {/* LEFT: Video */}
                 <div className="flex flex-col flex-1 min-w-0">
                     <StreamTheme>
                         <SpeakerLayout participantBarPosition="bottom" />
@@ -139,14 +148,20 @@ export default function CallUI({
                     </StreamTheme>
                 </div>
 
-                {/* ── RIGHT: Chat / AI panel ── */}
-                <div className="w-85 shrink-0 flex flex-col border-l border-white/8 ">
-                    {/* Tab switcher */}
-                    <Tabs defaultValue="chat"  className='h-full overflow-hidden'>
+                {/* RIGHT: Chat / AI panel */}
+                <div className="w-85 shrink-0 flex flex-col border-l border-white/8">
+                    <Tabs defaultValue="chat" className="h-full overflow-hidden">
                         <TabsList variant="line" className="w-full">
-                            <TabsTrigger value="chat" className='w-1/2 py-4 h-6'><MessageSquare size={12} /> Chat</TabsTrigger>
-                            { isInterviewer && <TabsTrigger value="questions" className='w-1/2 py-4 h-6'><Sparkles size={13} />AI Questions</TabsTrigger>}
+                            <TabsTrigger value="chat" className="w-1/2 py-4 h-6">
+                                <MessageSquare size={12} /> Chat
+                            </TabsTrigger>
+                            {isInterviewer && (
+                                <TabsTrigger value="questions" className="w-1/2 py-4 h-6">
+                                    <Sparkles size={13} /> AI Questions
+                                </TabsTrigger>
+                            )}
                         </TabsList>
+
                         <TabsContent value="chat">
                             {chatClient && chatChannel ? (
                                 <Chat client={chatClient} theme="str-chat__theme-dark">
@@ -164,10 +179,9 @@ export default function CallUI({
                             )}
                         </TabsContent>
 
-                        <TabsContent value="questions" className='overflow-hidden'>
-                             <AIQuestionsPanel categories={booking.categories} />
+                        <TabsContent value="questions" className="overflow-hidden">
+                            <AIQuestionsPanel categories={booking.categories} />
                         </TabsContent>
-
                     </Tabs>
                 </div>
             </div>

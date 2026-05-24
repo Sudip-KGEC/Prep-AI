@@ -6,6 +6,8 @@ export async function POST(request) {
   const body = await request.json();
   const eventType = body.type;
 
+  console.log("[stream-webhook] event:", eventType);
+
   if (
     eventType !== "call.transcription_ready" &&
     eventType !== "call.recording_ready"
@@ -13,9 +15,10 @@ export async function POST(request) {
     return Response.json({ ok: true });
   }
 
-  // Stream sends "default:mock_123_abc" — strip the prefix
   const callCid = body.call_cid ?? "";
   const streamCallId = callCid.includes(":") ? callCid.split(":")[1] : callCid;
+
+  console.log("[stream-webhook] streamCallId:", streamCallId);
 
   if (!streamCallId) return Response.json({ ok: true });
 
@@ -33,15 +36,18 @@ export async function POST(request) {
       },
     });
 
+    console.log("[stream-webhook] booking found:", !!booking);
+
     if (!booking) return Response.json({ ok: true });
 
-    // ── Recording ready ───────────────────────────────────────────────────────
     if (eventType === "call.recording_ready") {
       const recordingUrl =
         body.call_recording?.url ??
         body.call_recording?.filename ??
         body.recording_url ??
         null;
+
+      console.log("[stream-webhook] recordingUrl:", recordingUrl);
 
       if (!recordingUrl) return Response.json({ ok: true });
 
@@ -50,31 +56,32 @@ export async function POST(request) {
         data: { recordingUrl },
       });
 
+      console.log("[stream-webhook] recording saved ✅");
       return Response.json({ ok: true });
     }
 
-    // ── Transcription ready ───────────────────────────────────────────────────
     if (eventType === "call.transcription_ready") {
-      // Idempotency guard — Stream may retry the same webhook multiple times
-      if (booking.feedback) return Response.json({ ok: true });
+      if (booking.feedback) {
+        console.log("[stream-webhook] feedback already exists, skipping");
+        return Response.json({ ok: true });
+      }
 
-      // Try multiple payload shapes Stream uses across SDK versions
       const transcriptUrl =
         body.call_transcription?.url ??
         body.call_transcription?.filename ??
         body.transcription_url ??
         null;
 
+      console.log("[stream-webhook] transcriptUrl:", transcriptUrl);
+
       if (!transcriptUrl) return Response.json({ ok: true });
 
-      // 1. Download JSONL transcript from Stream CDN
       const transcriptRes = await fetch(transcriptUrl);
       if (!transcriptRes.ok) return Response.json({ ok: true });
 
       const transcriptText = await transcriptRes.text();
       if (!transcriptText?.trim()) return Response.json({ ok: true });
 
-      // 2. Parse JSONL — each line is a speech segment
       const lines = transcriptText
         .trim()
         .split("\n")
@@ -88,9 +95,10 @@ export async function POST(request) {
         })
         .filter((entry) => entry?.type === "speech");
 
+      console.log("[stream-webhook] transcript lines:", lines.length);
+
       if (lines.length === 0) return Response.json({ ok: true });
 
-      // Map clerkUserId → display name for readable transcript
       const speakerMap = {
         [booking.interviewer.clerkUserId]: booking.interviewer.name ?? "Interviewer",
         [booking.interviewee.clerkUserId]: booking.interviewee.name ?? "Interviewee",
@@ -100,7 +108,6 @@ export async function POST(request) {
         .map((l) => `${speakerMap[l.speaker_id] ?? l.speaker_id}: ${l.text}`)
         .join("\n");
 
-      // 3. Generate structured feedback via Gemini
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
@@ -134,26 +141,28 @@ Analyze the candidate's performance. Respond ONLY with a valid JSON object, no m
         .replace(/^```json|^```|```$/gm, "")
         .trim();
 
+      console.log("[stream-webhook] gemini raw:", raw.slice(0, 200));
+
       let feedbackData;
       try {
         feedbackData = JSON.parse(raw);
       } catch {
-        // Gemini returned malformed JSON — bail safely, Stream will retry
+        console.error("[stream-webhook] JSON parse failed:", raw);
         return Response.json({ ok: true });
       }
 
-      // Validate required fields before writing to DB
       const requiredFields = [
         "summary", "technical", "communication",
-        "problemSolving", "recommendation", "overallRating"
+        "problemSolving", "recommendation", "overallRating",
       ];
       const isValid = requiredFields.every(
         (f) => typeof feedbackData[f] === "string" && feedbackData[f].trim()
       );
+
+      console.log("[stream-webhook] feedbackData valid:", isValid);
+
       if (!isValid) return Response.json({ ok: true });
 
-      // 4. Atomic write — upsert feedback + mark booking COMPLETED
-      // Upsert handles concurrent webhook retries without P2002 unique errors
       await db.$transaction([
         db.feedback.upsert({
           where: { bookingId: booking.id },
@@ -168,7 +177,7 @@ Analyze the candidate's performance. Respond ONLY with a valid JSON object, no m
             improvements: feedbackData.improvements ?? [],
             overallRating: feedbackData.overallRating,
           },
-          update: {}, // idempotent — never overwrite existing feedback
+          update: {},
         }),
         db.booking.update({
           where: { id: booking.id },
@@ -176,7 +185,8 @@ Analyze the candidate's performance. Respond ONLY with a valid JSON object, no m
         }),
       ]);
 
-      // 5. Credit the interviewer — checked separately to avoid transaction conflicts
+      console.log("[stream-webhook] feedback saved ✅");
+
       const earnExists = await db.creditTransaction.findFirst({
         where: { bookingId: booking.id, type: "BOOKING_EARNING" },
       });
@@ -190,13 +200,12 @@ Analyze the candidate's performance. Respond ONLY with a valid JSON object, no m
             bookingId: booking.id,
           },
         });
+        console.log("[stream-webhook] interviewer credited ✅");
       }
     }
 
     return Response.json({ ok: true });
   } catch (err) {
-    // Always return 200 — non-2xx triggers aggressive Stream retries
-    // which can cause duplicate feedback writes
     console.error("[stream-webhook] error:", err);
     return Response.json({ ok: true });
   }
